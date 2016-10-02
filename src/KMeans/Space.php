@@ -135,7 +135,7 @@ class Space extends SplObjectStorage
 		$nbClusters = $this->nbClusters($clusters[0]);
 		
 		for ($n=0; $n<$nbClusters; $n++)
-		{
+		{	
 			$min= null;
 			foreach ($clusters as $id => $nilai)
 				($min > $nilai[$n] || $min === null) && $min = $nilai[$n] AND $nid = $id;
@@ -143,31 +143,51 @@ class Space extends SplObjectStorage
 			$hasIterate[$nid][$n] = $min;
 		}
 		
-		ksort($hasIterate);
+		foreach ($clusters as $id => $nilai)
+			(array_key_exists($id, $hasIterate) == false) && ($hasIterate[$id] = array());
 		
+		ksort($hasIterate);
+		//Pr($hasIterate);
 		return $hasIterate;
 	}
 	
-	function checking($clusters, $points)
+	function checking($clusters, $clusters2)
 	{
-		$newPKlaster = $this->getNewPusatKlaster($clusters, $points);
+		$ar1 = array();$ar2 = array();
 		
-		return $newPKlaster;
+		for($i=0;$i<count($clusters);$i++){
+			$ar1[] = array_keys($clusters[$i]);
+			$ar2[] = array_keys($clusters2[$i]);
+		}
+		
+		if($ar1 == $ar2){
+			$n = TRUE;
+		}else{
+			$n = FALSE;
+		}
+		//print_r($ar1);echo"</br>";print_r($ar2);echo"</br></br>";
+		return $n;
 	}
 	
-	protected function getNewPusatKlaster($clusters, $points)
+	function getNewPusatKlaster($clusters, $points, $pk)
 	{
+		//Pr($clusters);
 		$newPK = array();
 		for ($n=0; $n<count($clusters[1]); $n++)
 		{
 			for ($i=0; $i<$this->dimention; $i++)
 			{
 				$data = null;
+				if($clusters[1][$n] == null){
+					$newPK[$n][$i] = $pk[$n][$i];
+					//Pr($clusters[1][$n]);
+				}else{
+				
 				foreach($clusters[1][$n] as $idKlaster => $isiKlaster)
 					$data += $points[$idKlaster][$i];
 				
 				$newPK[$n][$i] = $data/count($clusters[1][$n]);
-				
+				}
 			}
 		}
 		
