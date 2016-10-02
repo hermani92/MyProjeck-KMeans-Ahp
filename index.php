@@ -55,7 +55,7 @@ $points = [
 	[92,80,88],[85,79,84],
 ];
 
-$batasIterasi = 4;
+$batasIterasi = 500;
 $pusatKlaster = [
 	[90,90,90],
 	[80,80,82],
@@ -74,27 +74,13 @@ for ($n=1; $n<=$batasIterasi; $n++)
 	
 	$savePK[$n] = $pusatKlaster;
 	
-	$pusatKlaster = $space->checking($clusters[$n], $points);
+	if(count($clusters) != 1){
+		if($space->checking($clusters[$n][1], $clusters[$n-1][1]) == TRUE)
+			Break;
+	}
+	
+	$pusatKlaster = $space->getNewPusatKlaster($clusters[$n], $points, $savePK[$n]);
 }
 
-Pr($clusters);
-
-
-$a = $clusters[1][1][0]; //static
-
-foreach ($a as $id => $value)
-	$clusToR[$id] = $points[$id];
-
-$skala = new Modul($db);
-$nilaiSkala = $skala->readAll("ahp");
-
-while($n = $nilaiSkala->fetch(PDO::FETCH_ASSOC))
-	$nSkala[] = $n;
-
-//Pr($nSkala);
-
-$hasilRangking = new AHP\Rangking($clusToR, $nSkala);
-
-
-
-
+//Pr($savePK);
+//Pr($clusters);
